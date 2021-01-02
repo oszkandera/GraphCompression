@@ -4,6 +4,6 @@ namespace GraphProcessor.Core.Interfaces.GraphLoader
 {
     public interface IGraphLoader
     {
-        Dictionary<int, HashSet<int>> Load(string filePath);
+        Dictionary<int, List<int>> Load(string filePath);
     }
 }
