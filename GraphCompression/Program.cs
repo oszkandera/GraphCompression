@@ -12,6 +12,9 @@ namespace GraphCompression
             var graphLoader = new AdjacencyListGraphLoader();
 
             var graph = graphLoader.Load(path);
+
+            //Test
+            var node = graph.GetNode(254);
         }
     }
 }
