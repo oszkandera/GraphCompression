@@ -1,4 +1,5 @@
-﻿using GraphProcessor.Core.GraphLoader;
+﻿using GraphCompression.Core.Helpers;
+using GraphProcessor.Core.GraphLoader;
 using System;
 
 namespace GraphCompression
@@ -13,7 +14,10 @@ namespace GraphCompression
 
             var graph = graphLoader.Load(path);
 
-            //Test
+            //Test - get size of object
+            var s = SizeDetector.GetSizeOfObject(graph);
+
+            //Test - GetNode
             var node = graph.GetNode(254);
         }
     }

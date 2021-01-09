@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace GraphCompression.Core.Model
 {
+    [Serializable]
     public class Graph<T> : IGraph<T>
     {
         private readonly Dictionary<T, SortedList<T, T>> _graph;
