@@ -10,8 +10,8 @@ namespace GraphCompression.Core.Models
         /// </summary>
         public int Size => Graph == null ? 0 : Graph.Count;
 
-        private SortedDictionary<int, SortedList<int, int>> _graph;
-        protected SortedDictionary<int, SortedList<int, int>> Graph => _graph != null ? _graph : _graph = new SortedDictionary<int, SortedList<int, int>>();
+        private Dictionary<int, List<int>> _graph;
+        protected Dictionary<int, List<int>> Graph => _graph != null ? _graph : _graph = new Dictionary<int, List<int>>();
 
         public abstract void AddEdge(int nodeX, int nodeY);
         public abstract void AddBidirectionEdge(int nodeX, int nodeY);

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace GraphCompression.Core.Models
 {
-    [Serializable]
     public class Graph : GraphBase
     {
         public override void AddNode(int node)
@@ -13,18 +12,14 @@ namespace GraphCompression.Core.Models
                 throw new Exception("NodeAlreadyExists");
             } 
             
-            Graph.Add(node, new SortedList<int, int>());
+            Graph.Add(node, new List<int>());
         }
 
         public override void AddEdge(int nodeX, int nodeY)
         {
-            if (!Graph.ContainsKey(nodeX)) Graph.Add(nodeX, new SortedList<int, int>());
+            if (!Graph.ContainsKey(nodeX)) Graph.Add(nodeX, new List<int>());
 
-            if (!Graph[nodeX].ContainsValue(nodeY))
-            {
-                var currentNeighborCount = Graph[nodeX].Count;
-                Graph[nodeX].Add(currentNeighborCount + 1, nodeY);
-            }
+            if (!Graph[nodeX].Contains(nodeY)) Graph[nodeX].Add(nodeY);
         }
 
         public override void AddBidirectionEdge(int nodeX, int nodeY)

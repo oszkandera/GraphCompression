@@ -6,10 +6,10 @@ namespace GraphCompression.Core.Models
     {
         public Node()
         {
-            Neighbors = new SortedList<int, int>();
+            Neighbors = new List<int>();
         }
 
         public int NodeIdentifier { get; set; }
-        public SortedList<int, int> Neighbors { get; set; }
+        public List<int> Neighbors { get; set; }
     }
 }
