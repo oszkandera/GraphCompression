@@ -1,5 +1,4 @@
-﻿using GraphCompression.Core.Helpers;
-using GraphProcessor.Core.GraphLoader;
+﻿using GraphProcessor.Core.GraphLoader;
 using System;
 
 namespace GraphCompression
@@ -12,10 +11,7 @@ namespace GraphCompression
 
             var graphLoader = new AdjacencyListGraphLoader();
 
-            var graph = graphLoader.Load(path);
-
-            //Test - get size of object
-            var s = SizeDetector.GetSizeOfObject(graph);
+            var (graph, nodeMap) = graphLoader.Load(path);
 
             //Test - GetNode
             var node = graph.GetNode(254);
