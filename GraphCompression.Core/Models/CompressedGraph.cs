@@ -1,25 +1,14 @@
-﻿namespace GraphCompression.Core.Models
+﻿using System.Collections.Generic;
+
+namespace GraphCompression.Core.Models
 {
-    public class CompressedGraph : GraphBase
+    public class CompressedGraph
     {
-        public override void AddBidirectionEdge(int nodeX, int nodeY)
-        {
-            throw new System.NotImplementedException();
-        }
+        public List<CompressedNode> GraphStructure { get; set; }
 
-        public override void AddEdge(int nodeX, int nodeY)
+        public void AddNode(CompressedNode node)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public override void AddNode(int node)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override Node GetNode(int node)
-        {
-            throw new System.NotImplementedException();
+            GraphStructure.Add(node);
         }
     }
 }

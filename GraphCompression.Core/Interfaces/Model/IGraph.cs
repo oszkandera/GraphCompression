@@ -11,5 +11,6 @@ namespace GraphCompression.Core.Interfaces.Model
         void AddEdge(int nodeX, int nodeY);
         void AddBidirectionEdge(int nodeX, int nodeY);
         Node GetNode(int nodeIdentifier);
+        Dictionary<int, List<int>> RawGraphStructure { get; }
     }
 }

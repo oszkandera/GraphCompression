@@ -8,10 +8,11 @@ namespace GraphCompression.Core.Models
         /// <summary>
         /// Returns number of nodes in graph
         /// </summary>
-        public int Size => Graph == null ? 0 : Graph.Count;
+        public int Size => RawGraphStructure.Count;
 
         private Dictionary<int, List<int>> _graph;
-        protected Dictionary<int, List<int>> Graph => _graph != null ? _graph : _graph = new Dictionary<int, List<int>>();
+        public Dictionary<int, List<int>> RawGraphStructure => _graph != null ? _graph : _graph = new Dictionary<int, List<int>>();
+
 
         public abstract void AddEdge(int nodeX, int nodeY);
         public abstract void AddBidirectionEdge(int nodeX, int nodeY);
@@ -21,7 +22,7 @@ namespace GraphCompression.Core.Models
 
         public IEnumerator<Node> GetEnumerator()
         {
-            foreach(var node in Graph)
+            foreach(var node in RawGraphStructure)
             {
                 yield return new Node
                 {
