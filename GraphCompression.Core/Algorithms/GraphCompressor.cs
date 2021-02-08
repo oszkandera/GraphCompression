@@ -11,17 +11,21 @@ namespace GraphCompression.Core.Algorithms
 {
     public class GraphCompressor : IGraphCompressor
     {
-        private readonly object _syncObject = new object();
+        //private readonly object _syncObject = new object();
 
         public CompressedGraph Compress(IGraph originalGraph)
         {
             var sortedGraphStructure = GetSortedGrahStructure(originalGraph.RawGraphStructure);
 
+            //Node 1 referencuje Node2
             var mostSimilarNodes = GetMostSimilarNodes(sortedGraphStructure);
 
-            //RemoveCycles(mostSimilarNodes);
 
             var compressedGraph = CreateCompressedGraph(mostSimilarNodes);
+
+
+            var originalCount = Enumerable.Sum(originalGraph.Select(x => x.Neighbors.Count));
+            var cCount = Enumerable.Sum(compressedGraph.GraphStructure.Select(x => x.ExtraNodes.Count));
 
             return compressedGraph;
         }
@@ -36,44 +40,42 @@ namespace GraphCompression.Core.Algorithms
                 var referenceTo = similarNode.Node2;
 
 
+                var referenceList = new bool[similarNode.Neighbors2.Count];
+                int tempIndex = 0;
+                foreach(var neighbor in similarNode.Neighbors2)
+                {
+                    if (similarNode.Neighbors1.Contains(neighbor))
+                    {
+                        referenceList[tempIndex] = true;
+                    }
+                    else
+                    {
+                        referenceList[tempIndex] = false;
+                    }
+
+                    tempIndex++;
+                }
+
+                var extraNodes = new SortedSet<int>();
+                foreach(var neighbor in similarNode.Neighbors1)
+                {
+                    if (!similarNode.Neighbors2.Contains(neighbor))
+                    {
+                        extraNodes.Add(neighbor.Value);
+                    }
+                }
+
                 compressedGraph.AddNode(new CompressedNode
                 {
                     Id = nodeId,
                     ReferenceId = referenceTo,
+                    ReferenceList = referenceList,
+                    ExtraNodes = extraNodes
                 });
             }
 
             return compressedGraph;
         }
-
-        public void RemoveCycles(List<SimilarNode> mostSimilarNodes)
-        {
-            var usedNodes = new HashSet<int>();
-
-            var nodeToProcess = mostSimilarNodes.FirstOrDefault();
-            while(nodeToProcess != null)
-            {
-                usedNodes.Add(nodeToProcess.Node1);
-
-                if (nodeToProcess.Node2.HasValue && usedNodes.Contains(nodeToProcess.Node2.Value)) //Detect cycle
-                {
-                    nodeToProcess.Node2 = null;
-                    nodeToProcess.Neighbors2 = new SortedList<int, int>();
-
-                    nodeToProcess = mostSimilarNodes.FirstOrDefault(x => !usedNodes.Contains(x.Node1));
-                }
-                else if (nodeToProcess.Node2.HasValue)
-                {
-                    nodeToProcess = mostSimilarNodes.FirstOrDefault(x => x.Node1 == nodeToProcess.Node2);
-                }
-                else
-                {
-                    nodeToProcess = mostSimilarNodes.FirstOrDefault(x => !usedNodes.Contains(x.Node1));
-                }
-
-            }
-        }
-
         private Dictionary<int, SortedList<int, int>> GetSortedGrahStructure(Dictionary<int, List<int>> graphStructure)
         {
             var sortedGraphStructure = new Dictionary<int, SortedList<int, int>>();
@@ -92,18 +94,30 @@ namespace GraphCompression.Core.Algorithms
         {
             var mostSimilarNodes = new List<SimilarNode>();
 
-            //var graphCopy = Clone.Create(originalGraph);
+            //Uzel na který je referencovano nemuze referencovat jiné uzly
+            var usedReferences = new HashSet<int>();
+            //Uzly, které referencuji jiné uzly nemohou byt referencovany jinymi uzly
+            var alreadyReferencingNodes = new HashSet<int>();
 
-            Parallel.For(0, originalGraph.Count, i =>
+            for(int i = 0; i < originalGraph.Count; i++)
             {
                 int? theMostSimilarNode = null;
                 var maxNumberOfSimilarNodes = 0;
 
+                if (usedReferences.Contains(i))
+                {
+                    mostSimilarNodes.Add(new SimilarNode()
+                    {
+                        Node1 = i,
+                        Neighbors1 = originalGraph[i],
+                        Neighbors2 = new SortedList<int, int>()
+                    });
+                    continue;
+                }
+
                 for (int y = 0; y < originalGraph.Count; y++)
                 {
-                    if (AreSameNodes(i, y)) continue;
-
-
+                    if (AreSameNodes(i, y) || alreadyReferencingNodes.Contains(y)) continue;
 
                     var primaryNodeNeighbors = originalGraph[i];
                     var secondaryNodeNeighbors = originalGraph[y];
@@ -126,17 +140,21 @@ namespace GraphCompression.Core.Algorithms
                         theMostSimilarNode = y;
                     }
                 }
-                lock (_syncObject)
+
+                if (theMostSimilarNode.HasValue)
                 {
-                    mostSimilarNodes.Add(new SimilarNode()
-                    {
-                        Node1 = i,
-                        Node2 = theMostSimilarNode,
-                        Neighbors1 = originalGraph[i],
-                        Neighbors2 = theMostSimilarNode.HasValue ? originalGraph[theMostSimilarNode.Value] : new SortedList<int, int>()
-                    });
+                    usedReferences.Add(theMostSimilarNode.Value);
+                    alreadyReferencingNodes.Add(i);
                 }
-            });
+
+                mostSimilarNodes.Add(new SimilarNode()
+                {
+                    Node1 = i,
+                    Node2 = theMostSimilarNode,
+                    Neighbors1 = originalGraph[i],
+                    Neighbors2 = theMostSimilarNode.HasValue ? originalGraph[theMostSimilarNode.Value] : new SortedList<int, int>()
+                });
+            }
 
             return mostSimilarNodes;
         }
