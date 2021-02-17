@@ -1,6 +1,5 @@
 ﻿using GraphCompression.Core.Algorithms;
 using GraphProcessor.Core.GraphLoader;
-using System;
 
 namespace GraphCompression
 {
@@ -19,7 +18,8 @@ namespace GraphCompression
             var node = graph.GetNode(254);
 
 
-            var compressor = new GraphCompressor();
+            //var compressor = new GraphCompressor();
+            var compressor = new MultidimensionalGraphCompressor();
             var compressedGraph = compressor.Compress(graph);
         }
     }

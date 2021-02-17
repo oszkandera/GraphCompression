@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace GraphCompression.Core.Models
 {
@@ -6,7 +7,7 @@ namespace GraphCompression.Core.Models
     {
         public int Id { get; set; }
         public int? ReferenceId { get; set; }
-        public bool[] ReferenceList { get; set; }
+        public BitArray ReferenceList { get; set; }
         public SortedSet<int> ExtraNodes { get; set; }
     }
 }

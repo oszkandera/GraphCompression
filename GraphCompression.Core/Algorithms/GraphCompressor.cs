@@ -3,6 +3,7 @@ using GraphCompression.Core.Interfaces.Model;
 using GraphCompression.Core.Models;
 using GraphCompression.Core.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,8 +12,6 @@ namespace GraphCompression.Core.Algorithms
 {
     public class GraphCompressor : IGraphCompressor
     {
-        //private readonly object _syncObject = new object();
-
         public CompressedGraph Compress(IGraph originalGraph)
         {
             var sortedGraphStructure = GetSortedGrahStructure(originalGraph.RawGraphStructure);
@@ -40,17 +39,18 @@ namespace GraphCompression.Core.Algorithms
                 var referenceTo = similarNode.Node2;
 
 
-                var referenceList = new bool[similarNode.Neighbors2.Count];
+                //var referenceList = new bool[similarNode.Neighbors2.Count];
+                var referenceList = new BitArray(similarNode.Neighbors2.Count);
                 int tempIndex = 0;
                 foreach(var neighbor in similarNode.Neighbors2)
                 {
                     if (similarNode.Neighbors1.Contains(neighbor))
                     {
-                        referenceList[tempIndex] = true;
+                        referenceList.Set(tempIndex, true);
                     }
                     else
                     {
-                        referenceList[tempIndex] = false;
+                        referenceList.Set(tempIndex, false);
                     }
 
                     tempIndex++;
