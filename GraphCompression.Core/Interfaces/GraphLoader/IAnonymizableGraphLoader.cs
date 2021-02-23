@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace GraphCompression.Core.Interfaces.GraphLoader
 {
-    public interface IGraphLoader
+    public interface IAnonymizableGraphLoader : IGraphLoader
     {
-        (IGraph, Dictionary<string, int>) Load(string filePath);
+        (IGraph, Dictionary<string, int>) LoadAnonymized(string filePath);
     }
 }
