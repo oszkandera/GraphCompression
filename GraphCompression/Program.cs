@@ -1,4 +1,5 @@
 ﻿using GraphCompression.Core.Algorithms;
+using GraphCompression.Core.Models;
 using GraphProcessor.Core.GraphLoader;
 using System.Linq;
 
@@ -20,11 +21,13 @@ namespace GraphCompression
 
 
             //var compressor = new GraphCompressor();
-            var compressor = new MultidimensionalGraphCompressor(1024);
+            var compressor = new MultidimensionalGraphCompressor(new GraphCompresorParameters
+            {
+                MaxReferenceListSize = 1024,
+                MaxReferenceChainSize = 10
+            });
+
             var compressedGraph = compressor.Compress(graph);
-
-            var x = compressedGraph.GraphStructure.Where(x => x.ReferenceId.HasValue).Count();
-
         }
     }
 }
