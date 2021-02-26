@@ -1,6 +1,7 @@
 ﻿using GraphCompression.Core.Algorithms;
 using GraphCompression.Core.Models;
 using GraphProcessor.Core.GraphLoader;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GraphCompression
@@ -16,18 +17,19 @@ namespace GraphCompression
 
             var (graph, nodeMap) = graphLoader.Load(path);
 
-            //Test - GetNode
-            var node = graph.GetNode(254);
-
+            var p = Enumerable.Sum(graph.RawGraphStructure.Select(x => x.Value.Count));
 
             //var compressor = new GraphCompressor();
             var compressor = new MultidimensionalGraphCompressor(new GraphCompresorParameters
             {
                 MaxReferenceListSize = 1024,
-                MaxReferenceChainSize = 10
+                //MaxReferenceChainSize = 1
             });
 
+
             var compressedGraph = compressor.Compress(graph);
+
+            var x = Enumerable.Sum(compressedGraph.GraphStructure.Select(x => x.ExtraNodes.Count));
         }
     }
 }

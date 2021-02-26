@@ -2,6 +2,7 @@
 using GraphCompression.Core.Interfaces.Algorithms;
 using GraphCompression.Core.Interfaces.Model;
 using GraphCompression.Core.Models;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -123,6 +124,7 @@ namespace GraphCompression.Core.Algorithms
             //nutne ykontrolovat hloubku zanoreni. Pokud bude hloubka zanoreni < !! (je nutne ostre rovnitko), pak referenci nepridavat
 
             var similarNodes = new List<SimilarNode>();
+            var referenceChain = new Dictionary<int, HashSet<int>>();
 
             for (int findingNodeIndex = 0; findingNodeIndex < sortedGraphStructure.Count - 1; findingNodeIndex++)
             {
@@ -156,9 +158,14 @@ namespace GraphCompression.Core.Algorithms
 
                         if (sameNodesCount == findingNodesCount) // Našli jsme uzel, ktery pojme všechny sousedy hledaneho uzlu
                         {
-                            mostSimilarNode = wantedNode;
-                            mostSimilarNodeFound = true;
-                            break;
+                            //var canCreateReference = CheckReferenceImmersion(referenceChain, wantedNode.Key);
+                            var canCreateReference = CheckReferenceImmersion(referenceChain, findingNode.Key);
+                            if (canCreateReference)
+                            {
+                                mostSimilarNode = wantedNode;
+                                mostSimilarNodeFound = true;
+                                break;
+                            }
                         }
                     }
 
@@ -174,6 +181,24 @@ namespace GraphCompression.Core.Algorithms
                     }
                 }
 
+                //TODO: Refactoring
+                //Kontroluje, zda je mozne vytvorit referenci z hlediska zanoreni
+                if(mostSimilarNode.HasValue && CheckReferenceImmersion(referenceChain, findingNode.Key))
+                {
+                    if (referenceChain.ContainsKey(mostSimilarNode.Value.Key))
+                    {
+                        referenceChain[mostSimilarNode.Value.Key].Add(findingNode.Key);
+                    }
+                    else
+                    {
+                        referenceChain.Add(mostSimilarNode.Value.Key, new HashSet<int> { findingNode.Key });
+                    }
+                }
+                else
+                {
+                    mostSimilarNode = null;
+                }
+                
                 var similarNode = SimilarNodeFactory.CreateSimilarNodeFromKeyValuePairs(findingNode, mostSimilarNode);
 
                 similarNodes.Add(similarNode);
@@ -184,6 +209,27 @@ namespace GraphCompression.Core.Algorithms
             similarNodes.Add(lastNode);
 
             return similarNodes;
+        }
+
+        private bool CheckReferenceImmersion(Dictionary<int, HashSet<int>> referenceChain, int referencingItem)
+        {
+            if (!_parameters.MaxReferenceChainSize.HasValue) return true;
+
+            var referenceChainDepth = Depth(referenceChain, referencingItem, 0);
+
+            return referenceChainDepth < _parameters.MaxReferenceChainSize;
+        }
+
+        private int Depth(Dictionary<int, HashSet<int>> referenceChain, int referencingItem, int depth)
+        {
+            if (!referenceChain.ContainsKey(referencingItem) || !referenceChain[referencingItem].Any()) return 0;
+
+            int result = depth + 1;
+
+            foreach (var referencingNode in referenceChain[referencingItem])
+                result = Math.Max(result, Depth(referenceChain, referencingNode, depth + 1));
+
+            return result;
         }
 
         private List<KeyValuePair<int, List<int>>> GetSortedGraphStructure(Dictionary<int, List<int>> originalGraphStructure)
