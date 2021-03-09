@@ -1,6 +1,6 @@
 ﻿using GraphCompression.Core.Algorithms;
+using GraphCompression.Core.GraphLoader;
 using GraphCompression.Core.Models;
-using GraphProcessor.Core.GraphLoader;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,10 +10,16 @@ namespace GraphCompression
     {
         static void Main(string[] args)
         {
-            var path = @"..\..\..\Data\web-NotreDame-light2.edges";
+            //var path = @"..\..\..\Data\bio-CE-GN.edges";
+            //var path = @"..\..\..\Data\web-indochina-2004.mtx";
+            //var path = @"..\..\..\Data\web-EPA.edges";
+            //var path = @"..\..\..\Data\web-polblogs.mtx";
+            var path = @"..\..\..\Data\web-edu.mtx";
+            //var path = @"..\..\..\Data\web-NotreDame-light2.edges";
             //var path = @"..\..\..\Data\web-NotreDame.edges";
 
-            var graphLoader = new AdjacencyListGraphLoader();
+            //var graphLoader = new AdjacencyListGraphLoader();
+            var graphLoader = new MTXGraphLoader();
 
             var (graph, nodeMap) = graphLoader.Load(path);
 
@@ -23,7 +29,7 @@ namespace GraphCompression
             var compressor = new MultidimensionalGraphCompressor(new GraphCompresorParameters
             {
                 MaxReferenceListSize = 1024,
-                //MaxReferenceChainSize = 1
+                MaxReferenceChainSize = 10
             });
 
 

@@ -4,7 +4,7 @@ using System.IO;
 
 namespace GraphCompression.Core.GraphLoader
 {
-    public class AdjacencyListGraphLoader : GraphLoaderBase
+    public class MTXGraphLoader : GraphLoaderBase
     {
         protected override List<Tuple<string, string>> ProcessRawData(string filePath)
         {
@@ -13,6 +13,7 @@ namespace GraphCompression.Core.GraphLoader
             using (var reader = new StreamReader(new FileStream(filePath, FileMode.Open)))
             {
                 string line;
+                SkipCommentAndInfoRows(reader);
                 while ((line = reader.ReadLine()) != null)
                 {
                     if (line.StartsWith("%")) continue;
@@ -27,6 +28,12 @@ namespace GraphCompression.Core.GraphLoader
             }
 
             return adjacencyList;
+        }
+
+        private void SkipCommentAndInfoRows(StreamReader reader)
+        {
+            reader.ReadLine(); // First row is comment
+            reader.ReadLine(); // Second row is row with information about number of nodes
         }
     }
 }
