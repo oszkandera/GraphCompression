@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace GraphCompression.Core.Factory
 {
-    public static class CompressedNodeFactroy
+    public static class CompressedNodeFactory
     {
         public static CompressedNode CreateCompressedNodeFromSimilarNodeWithoutReference(SimilarNode similarNode)
         {
