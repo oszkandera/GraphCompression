@@ -53,7 +53,8 @@ namespace GraphCompression.Core.Algorithms
                         {
                             var wantedNeighbor = wantedNode.Value[wantedNodeNeighborIndex];
 
-                            if (findingNeighbor > wantedNeighbor) break; // Uzly jsou seřazeny - pokud najdeme vetší uzel, je jisté, že menší nenajdeme
+                            //Možnost časové optimalizace
+                            if (compressParameters.WithTimeOptimalization && findingNeighbor > wantedNeighbor) break;
 
                             if (findingNeighbor == wantedNeighbor) sameNodesCount++;
                         }

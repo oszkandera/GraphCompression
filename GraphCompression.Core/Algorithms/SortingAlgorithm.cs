@@ -10,6 +10,11 @@ namespace GraphCompression.Core.Code
         {
             var sortedGraphStructure = new List<KeyValuePair<int, List<int>>>();
 
+            if(originalGraphStructure == null)
+            {
+                return sortedGraphStructure;
+            }
+
             var sortedByDegree = originalGraphStructure.OrderBy(x => x.Value.Count);
 
             foreach (var node in sortedByDegree)
