@@ -2,7 +2,7 @@ using GraphCompression.Core.Code;
 using System.Collections.Generic;
 using Xunit;
 
-namespace Test
+namespace Test.UnitTest
 {
     public class DegreeSortingAlgorithmTest
     {
@@ -22,21 +22,13 @@ namespace Test
         {
             get
             {
-                var dataList = new List<object[]>();
-
                 var (withNullStructure, withNullExpected) = CreateOriginalGraphStructure("NULL");
                 var (withNullNeighborList, withNullNeighborListExpected) = CreateOriginalGraphStructure("WITH_NULL_NEIGHBOR_LIST");
                 var (validUnsorted, validUnsortedExpected) = CreateOriginalGraphStructure("VALID_UNSORTED");
 
-                dataList.Add(new object[] { withNullStructure, withNullExpected });
-                dataList.Add(new object[] { withNullNeighborList, withNullNeighborListExpected });
-                dataList.Add(new object[] { validUnsorted, validUnsortedExpected });
-                dataList.Add(new object[] { withNullStructure, withNullExpected });
-                dataList.Add(new object[] { withNullStructure, withNullExpected });
-                dataList.Add(new object[] { withNullStructure, withNullExpected });
-                dataList.Add(new object[] { withNullStructure, withNullExpected });
-
-                return dataList;
+                yield return new object[] { withNullStructure, withNullExpected };
+                yield return new object[] { withNullNeighborList, withNullNeighborListExpected };
+                yield return new object[] { validUnsorted, validUnsortedExpected };
             }
         }
 

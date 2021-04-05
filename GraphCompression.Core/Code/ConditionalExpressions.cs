@@ -1,4 +1,6 @@
 ﻿using GraphCompression.Core.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GraphCompression.Core.Code
 {
@@ -13,6 +15,11 @@ namespace GraphCompression.Core.Code
         {
             var numberOfNodesInNeighbor = similarNode.Neighbors2.Count;
             return maxReferenceListSize.HasValue && numberOfNodesInNeighbor > maxReferenceListSize.Value;
+        }
+
+        public static bool ContainsReferenceChainDictionaryReferencingItemWithValue(Dictionary<int, HashSet<int>> referenceChain, int referencingItem)
+        {
+            return !referenceChain.ContainsKey(referencingItem) || referenceChain[referencingItem] == null || !referenceChain[referencingItem].Any();
         }
     }
 }

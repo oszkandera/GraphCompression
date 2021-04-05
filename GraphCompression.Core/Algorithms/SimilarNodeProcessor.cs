@@ -1,9 +1,7 @@
 ﻿using GraphCompression.Core.Factory;
 using GraphCompression.Core.Interfaces.Algorithms;
 using GraphCompression.Core.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GraphCompression.Core.Algorithms
 {
@@ -12,6 +10,13 @@ namespace GraphCompression.Core.Algorithms
     /// </summary>
     public class SimilarNodeProcessor : ISimilarNodeProcessor
     {
+        private readonly IReferenceImmersionValidator _referenceImmersionValidator;
+
+        public SimilarNodeProcessor(IReferenceImmersionValidator referenceImmersionValidator)
+        {
+            _referenceImmersionValidator = referenceImmersionValidator;
+        }
+
         /// <summary>
         /// Method creates list of similar nodes of original graph
         /// </summary>
@@ -20,11 +25,6 @@ namespace GraphCompression.Core.Algorithms
         /// <returns>List of <c>SimilarNode</c>.</returns>
         public IEnumerable<SimilarNode> CreateListOfSimilarNodes(List<KeyValuePair<int, List<int>>> sortedGraphStructure, CompressParameters compressParameters)
         {
-            //Omezeni - uzel referencuje pouze uzel se stejnym, nebo vyssim stupnem, serazenou strukturu prochazime jednosmerne abychom
-            //zamezili cyklickym referencim = proto si muzeme dovolit stanovit podminku v druhem cykly y = i + 1
-            //Pocet pruchodu pres prvni cyklus je snizen o 1 protoze predpokladame, ze alespon 1 uzel nebude nic referencovat (v tomto pripade to 
-            //bude uzel posledni)
-
             var similarNodes = new List<SimilarNode>();
             var referenceChain = new Dictionary<int, HashSet<int>>();
 
@@ -61,7 +61,7 @@ namespace GraphCompression.Core.Algorithms
 
                         if (sameNodesCount == findingNodesCount) // Našli jsme uzel, ktery pojme všechny sousedy hledaneho uzlu
                         {
-                            var canCreateReference = CheckReferenceImmersion(referenceChain, findingNode.Key, compressParameters.MaxReferenceChainSize);
+                            var canCreateReference = _referenceImmersionValidator.ValidateReferenceImmersion(referenceChain, findingNode.Key, compressParameters.MaxReferenceChainSize);
                             if (canCreateReference)
                             {
                                 mostSimilarNode = wantedNode;
@@ -83,9 +83,7 @@ namespace GraphCompression.Core.Algorithms
                     }
                 }
 
-                //TODO: Refactoring
-                //Kontroluje, zda je mozne vytvorit referenci z hlediska zanoreni
-                if (mostSimilarNode.HasValue && CheckReferenceImmersion(referenceChain, findingNode.Key, compressParameters.MaxReferenceChainSize))
+                if (mostSimilarNode.HasValue && _referenceImmersionValidator.ValidateReferenceImmersion(referenceChain, findingNode.Key, compressParameters.MaxReferenceChainSize))
                 {
                     if (referenceChain.ContainsKey(mostSimilarNode.Value.Key))
                     {
@@ -111,27 +109,6 @@ namespace GraphCompression.Core.Algorithms
             similarNodes.Add(lastNode);
 
             return similarNodes;
-        }
-
-        private bool CheckReferenceImmersion(Dictionary<int, HashSet<int>> referenceChain, int referencingItem, int? maxReferenceChainSize)
-        {
-            if (!maxReferenceChainSize.HasValue) return true;
-
-            var referenceChainDepth = Depth(referenceChain, referencingItem, 0);
-
-            return referenceChainDepth < maxReferenceChainSize.Value;
-        }
-
-        private int Depth(Dictionary<int, HashSet<int>> referenceChain, int referencingItem, int depth)
-        {
-            if (!referenceChain.ContainsKey(referencingItem) || !referenceChain[referencingItem].Any()) return 0;
-
-            int result = depth + 1;
-
-            foreach (var referencingNode in referenceChain[referencingItem])
-                result = Math.Max(result, Depth(referenceChain, referencingNode, depth + 1));
-
-            return result;
         }
     }
 }

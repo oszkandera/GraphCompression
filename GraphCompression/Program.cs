@@ -1,9 +1,4 @@
-﻿using GraphCompression.Core.Algorithms;
-using GraphCompression.Core.Code;
-using GraphCompression.Core.GraphLoader;
-using GraphCompression.Core.Models;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
 
 namespace GraphCompression

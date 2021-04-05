@@ -15,36 +15,37 @@ namespace GraphCompression.Core.Algorithms
     /// </summary>
     public class GraphCompressor : IGraphCompressor
     {
-        private readonly CompressParameters _parameters;
+        private readonly IGraphSortingAlgorithm _graphSortingAlgorithm;
+        private readonly ISimilarNodeProcessor _similarNodeProcessor;
 
         /// <summary>
         /// Graph compressor constructor
         /// </summary>
-        /// <param name="graphCompresorParameters">Parameters for compression</param>
-        public GraphCompressor(CompressParameters graphCompresorParameters)
+        /// <param name="sortingAlgorithm">Class with algorithm which sorts nodes of original graph</param>
+        /// <param name="similarNodeProcessor">Class with method which returns list of the most similar nodes of original graph</param>
+        public GraphCompressor(IGraphSortingAlgorithm sortingAlgorithm, ISimilarNodeProcessor similarNodeProcessor)
         {
-            _parameters = graphCompresorParameters;
+            _graphSortingAlgorithm = sortingAlgorithm;
+            _similarNodeProcessor = similarNodeProcessor;
         }
 
         /// <summary>
         /// Generates graph with compressed structure
         /// </summary>
-        /// <param name="originalGraph">Original graph</param>
-        /// <param name="sortingAlgorithm">Class with algorithm which sorts nodes of original graph</param>
-        /// <param name="similarNodeProcessor">Class with method which returns list of the most similar nodes of original graph</param>
+        /// <param name="graphCompresorParameters">Parameters for compression</param>
         /// <returns>Compressed graph structure</returns>
-        public CompressedGraph Compress(IGraph originalGraph, IGraphSortingAlgorithm sortingAlgorithm, ISimilarNodeProcessor similarNodeProcessor)
+        public CompressedGraph Compress(IGraph originalGraph, CompressParameters graphCompresorParameters)
         {
-            var sortedGraphStructure = sortingAlgorithm.GetSortedGraphStructure(originalGraph.RawGraphStructure);
+            var sortedGraphStructure = _graphSortingAlgorithm.GetSortedGraphStructure(originalGraph.RawGraphStructure);
 
-            var similarNodes = similarNodeProcessor.CreateListOfSimilarNodes(sortedGraphStructure, _parameters);
+            var similarNodes = _similarNodeProcessor.CreateListOfSimilarNodes(sortedGraphStructure, graphCompresorParameters);
 
-            var compressedGraph = CreateCompressedGraph(similarNodes);
+            var compressedGraph = CreateCompressedGraph(similarNodes, graphCompresorParameters);
 
             return compressedGraph;
         }
 
-        private CompressedGraph CreateCompressedGraph(IEnumerable<SimilarNode> similarNodes)
+        private CompressedGraph CreateCompressedGraph(IEnumerable<SimilarNode> similarNodes, CompressParameters parameters)
         {
             var compressedGraph = new CompressedGraph();
 
@@ -52,7 +53,7 @@ namespace GraphCompression.Core.Algorithms
             {
                 //If node not constains referenction or referenction has more neighbors than specified maximal neighbors count 
                 if (!ConditionalExpressions.SimilarNodeContainsReference(similarNode) || 
-                     ConditionalExpressions.IsReferenceNeighborCountHigherThanMaxReferenceListSize(similarNode, _parameters.MaxReferenceListSize))
+                     ConditionalExpressions.IsReferenceNeighborCountHigherThanMaxReferenceListSize(similarNode, parameters.MaxReferenceListSize))
                 {
                     var compressedNodeWithoutReference = CompressedNodeFactory.CreateCompressedNodeFromSimilarNodeWithoutReference(similarNode);
                     compressedGraph.AddNode(compressedNodeWithoutReference);

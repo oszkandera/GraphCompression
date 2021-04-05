@@ -26,7 +26,7 @@ namespace GraphCompression
             _mtxGrahLoader = new MTXGraphLoader();
             _adjacencyListGraphLoader = new AdjacencyListGraphLoader();
             _sortingAlgorithm = new DegreeSortingAlgorithm();
-            _similarNodeProcessor = new SimilarNodeProcessor();
+            _similarNodeProcessor = new SimilarNodeProcessor(new ReferenceImmersionValidator());
 
 
             _testCompressParameters = new List<CompressParameters>
@@ -83,10 +83,10 @@ namespace GraphCompression
                 
                 foreach(var compressParameters in _testCompressParameters)
                 {
-                    var compressor = new GraphCompressor(compressParameters);
+                    var compressor = new GraphCompressor(_sortingAlgorithm, _similarNodeProcessor);
                     
                     stopwatch.Start();
-                    var compressedGraph = compressor.Compress(graph, _sortingAlgorithm, _similarNodeProcessor);
+                    var compressedGraph = compressor.Compress(graph, compressParameters);
                     stopwatch.Stop();
 
                     var compressedSize = Enumerable.Sum(compressedGraph.GraphStructure.Select(x => x.ExtraNodes.Count));

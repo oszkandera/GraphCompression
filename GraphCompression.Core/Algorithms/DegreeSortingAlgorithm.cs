@@ -10,7 +10,7 @@ namespace GraphCompression.Core.Code
         {
             var sortedGraphStructure = new List<KeyValuePair<int, List<int>>>();
 
-            if(originalGraphStructure == null)
+            if (originalGraphStructure == null)
             {
                 return sortedGraphStructure;
             }
