@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphCompression", "GraphCo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphCompression.Core", "..\GraphCompression.Core\GraphCompression.Core.csproj", "{40122C42-37C0-42E7-BECE-B4226C80C015}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "..\Test\Test.csproj", "{A281C267-AEB0-4864-A885-CAC2B52D8C26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphCompression.Test", "..\Test\GraphCompression.Test.csproj", "{A281C267-AEB0-4864-A885-CAC2B52D8C26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
