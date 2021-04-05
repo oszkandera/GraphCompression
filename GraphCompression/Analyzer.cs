@@ -18,14 +18,14 @@ namespace GraphCompression
 
         private IAnonymizableGraphLoader _mtxGrahLoader;
         private IAnonymizableGraphLoader _adjacencyListGraphLoader;
-        private SortingAlgorithm _sortingAlgorithm;
+        private DegreeSortingAlgorithm _sortingAlgorithm;
         private SimilarNodeProcessor _similarNodeProcessor;
         
         private Analyzer()
         {
             _mtxGrahLoader = new MTXGraphLoader();
             _adjacencyListGraphLoader = new AdjacencyListGraphLoader();
-            _sortingAlgorithm = new SortingAlgorithm();
+            _sortingAlgorithm = new DegreeSortingAlgorithm();
             _similarNodeProcessor = new SimilarNodeProcessor();
 
 
