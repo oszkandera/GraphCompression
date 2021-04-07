@@ -62,14 +62,7 @@ namespace GraphCompression.Core.Algorithms
                 {
                     var (referenceList, extraNodes) = GetReferenceListAndExtraNodes(similarNode);
 
-                    var compressedNode = new CompressedNode
-                    {
-                        Id = similarNode.Node1,
-                        ReferenceId = similarNode.Node2,
-                        ReferenceList = referenceList,
-                        ExtraNodes = extraNodes,
-                    };
-
+                    var compressedNode = CompressedNodeFactory.CreateCompressedNode(referenceList, extraNodes, similarNode);
                     compressedGraph.AddNode(compressedNode);
                 }
 
@@ -108,10 +101,16 @@ namespace GraphCompression.Core.Algorithms
                 referenceList.Set(referencedNodeNeighborIndex, isNodeInReferencingNode);
             }
 
-            var extraNodeList = similarNode.Neighbors1.Where(x => !pairedReferencingNodeNeighbors.Contains(x.Value)).Select(x => x.Value);
-            var extraNodes = new SortedSet<int>(extraNodeList);
-
+            var extraNodes = GetExtraNodes(pairedReferencingNodeNeighbors, similarNode);
             return (referenceList, extraNodes);
+        }
+
+        private SortedSet<int> GetExtraNodes(HashSet<int> pairedReferencingNodeNeighbors, SimilarNode similarNode)
+        {
+            var extraNodeList = similarNode.Neighbors1.Where(x => !pairedReferencingNodeNeighbors.Contains(x.Value))
+                                                      .Select(x => x.Value);
+
+            return new SortedSet<int>(extraNodeList);
         }
     }
 }
