@@ -21,8 +21,6 @@ jobs:
         with:
           dotnet-version: '5.0'
       - name: Build 
-        run: dotnet build
-        working-directory: src/GraphCompression 
+        run: dotnet build GraphCompression
       - name: Test
-        run: dotnet test
-        working-directory: src/GraphCompression 
+        run: dotnet test GraphCompression
