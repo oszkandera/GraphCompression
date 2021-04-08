@@ -12,6 +12,7 @@ namespace GraphCompression.Core.Code
 
             if (originalGraphStructure == null)
             {
+                return null;
                 return sortedGraphStructure;
             }
 
