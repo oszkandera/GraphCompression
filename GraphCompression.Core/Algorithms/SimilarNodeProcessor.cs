@@ -104,7 +104,7 @@ namespace GraphCompression.Core.Algorithms
                 similarNodes.Add(similarNode);
             }
 
-            //Pridani posledniho uzlu, ktery byl vynechan v cyklu protoze se nikdy nebude referencovat
+            //Pridani posledniho uzlu, ktery byl vynechan v cyklu protoze nikdy nebude referencovat žádný jiný uzel (zabránení cyklení)
             var lastNode = SimilarNodeFactory.CreateSimilarNodeFromKeyValuePairs(sortedGraphStructure[sortedGraphStructure.Count - 1]);
             similarNodes.Add(lastNode);
 

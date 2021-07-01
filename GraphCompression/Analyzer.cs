@@ -31,28 +31,28 @@ namespace GraphCompression
 
             _testCompressParameters = new List<CompressParameters>
             {
-                //new CompressParameters(){ MaxReferenceListSize = 64, MaxReferenceChainSize = null, WithTimeOptimalization = true},
-                //new CompressParameters(){ MaxReferenceListSize = 64, MaxReferenceChainSize = 5 },
-                //new CompressParameters(){ MaxReferenceListSize = 64, MaxReferenceChainSize = 10 },
-                //new CompressParameters(){ MaxReferenceListSize = 64, MaxReferenceChainSize = 20 },
-                //new CompressParameters(){ MaxReferenceListSize = 64, MaxReferenceChainSize = 50 },
+                //new CompressParameters(){ MaxReferenceListSize = 64, MaxReferenceChainSize = null},
+                new CompressParameters(){ MaxReferenceListSize = 64, MaxReferenceChainSize = 5 },
+                new CompressParameters(){ MaxReferenceListSize = 64, MaxReferenceChainSize = 10 },
+                new CompressParameters(){ MaxReferenceListSize = 64, MaxReferenceChainSize = 20 },
+                new CompressParameters(){ MaxReferenceListSize = 64, MaxReferenceChainSize = 50 },
 
                 //new CompressParameters(){ MaxReferenceListSize = 256, MaxReferenceChainSize = null},
-                //new CompressParameters(){ MaxReferenceListSize = 256, MaxReferenceChainSize = 5 },
-                //new CompressParameters(){ MaxReferenceListSize = 256, MaxReferenceChainSize = 10 },
-                //new CompressParameters(){ MaxReferenceListSize = 256, MaxReferenceChainSize = 20 },
-                //new CompressParameters(){ MaxReferenceListSize = 256, MaxReferenceChainSize = 50 },
+                new CompressParameters(){ MaxReferenceListSize = 256, MaxReferenceChainSize = 5 },
+                new CompressParameters(){ MaxReferenceListSize = 256, MaxReferenceChainSize = 10 },
+                new CompressParameters(){ MaxReferenceListSize = 256, MaxReferenceChainSize = 20 },
+                new CompressParameters(){ MaxReferenceListSize = 256, MaxReferenceChainSize = 50 },
 
                 //new CompressParameters(){ MaxReferenceListSize = 512, MaxReferenceChainSize = null},
-                //new CompressParameters(){ MaxReferenceListSize = 512, MaxReferenceChainSize = 5 },
-                //new CompressParameters(){ MaxReferenceListSize = 512, MaxReferenceChainSize = 10 },
-                //new CompressParameters(){ MaxReferenceListSize = 512, MaxReferenceChainSize = 20 },
-                //new CompressParameters(){ MaxReferenceListSize = 512, MaxReferenceChainSize = 50 },
+                new CompressParameters(){ MaxReferenceListSize = 512, MaxReferenceChainSize = 5 },
+                new CompressParameters(){ MaxReferenceListSize = 512, MaxReferenceChainSize = 10 },
+                new CompressParameters(){ MaxReferenceListSize = 512, MaxReferenceChainSize = 20 },
+                new CompressParameters(){ MaxReferenceListSize = 512, MaxReferenceChainSize = 50 },
 
-                new CompressParameters(){ MaxReferenceListSize = 1024, MaxReferenceChainSize = null},
+                //new CompressParameters(){ MaxReferenceListSize = 1024, MaxReferenceChainSize = null},
                 new CompressParameters(){ MaxReferenceListSize = 1024, MaxReferenceChainSize = 5 },
-                //new CompressParameters(){ MaxReferenceListSize = 1024, MaxReferenceChainSize = 10 },
-                //new CompressParameters(){ MaxReferenceListSize = 1024, MaxReferenceChainSize = 20 },
+                new CompressParameters(){ MaxReferenceListSize = 1024, MaxReferenceChainSize = 10 },
+                new CompressParameters(){ MaxReferenceListSize = 1024, MaxReferenceChainSize = 20 },
                 new CompressParameters(){ MaxReferenceListSize = 1024, MaxReferenceChainSize = 50 },
             };
         }
@@ -79,7 +79,7 @@ namespace GraphCompression
                 var graphLoader = sourceFileType == "edge" ? _adjacencyListGraphLoader : _mtxGrahLoader;
                 
                 var (graph, map) = graphLoader.Load(testInstance.FilePath);
-                var originalSize = Enumerable.Sum(graph.RawGraphStructure.Select(x => x.Value.Count));
+                var originalSize = Enumerable.Sum(graph.RawGraphStructure.Select(x => x.Value.Count * 32)) + graph.RawGraphStructure.Count * 32;
                 
                 foreach(var compressParameters in _testCompressParameters)
                 {
@@ -89,7 +89,7 @@ namespace GraphCompression
                     var compressedGraph = compressor.Compress(graph, compressParameters);
                     stopwatch.Stop();
 
-                    var compressedSize = Enumerable.Sum(compressedGraph.GraphStructure.Select(x => x.ExtraNodes.Count));
+                    var compressedSize = Enumerable.Sum(compressedGraph.GraphStructure.Select(x => (x.ExtraNodes.Count * 32) + (x.ReferenceList == null ? 0 : x.ReferenceList.Count))) + compressedGraph.GraphStructure.Count * 32;
 
 
                     analyzeOutput.Add(new AnalyzeResult
@@ -125,6 +125,7 @@ namespace GraphCompression
                         lineNumber++;
                         if(lineNumber == 1) continue;
                         if (string.IsNullOrWhiteSpace(line)) continue;
+                        if (line.StartsWith("--")) continue;
 
                         var data = line.Split(";");
                         analyzeDataList.Add(new AnalyzeData
