@@ -2,9 +2,9 @@ name: .NET
 
 on:
   push:
-    branches: [ master ]
+    branches: [ Testing ]
   pull_request:
-    branches: [ master ]
+    branches: [ Testing ]
 
 jobs:
   build:
@@ -23,8 +23,6 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore GraphCompression
       - name: Build 
-        run: dotnet build
-        working-directory: src/GraphCompression 
+        run: dotnet build GraphCompression
       - name: Test
-        run: dotnet test
-        working-directory: src/GraphCompression 
+        run: dotnet test GraphCompression
