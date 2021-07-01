@@ -1,10 +1,10 @@
-﻿using GraphCompression.Core.Model;
+﻿using GraphCompression.Core.Interfaces.Model;
 using System.Collections.Generic;
 
-namespace GraphProcessor.Core.Interfaces.GraphLoader
+namespace GraphCompression.Core.Interfaces.GraphLoader
 {
     public interface IGraphLoader
     {
-        Graph<int> Load(string filePath);
+        (IGraph, Dictionary<string, int>) Load(string filePath);
     }
 }

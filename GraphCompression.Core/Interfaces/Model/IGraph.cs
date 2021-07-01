@@ -1,11 +1,16 @@
-﻿using GraphCompression.Core.Model;
+﻿using GraphCompression.Core.Models;
+using System.Collections.Generic;
 
 namespace GraphCompression.Core.Interfaces.Model
 {
-    public interface IGraph<T>
+    public interface IGraph : IEnumerable<Node>
     {
-        void AddNode(T node);
-        void AddEdge(T nodeX, T nodeY);
-        Node<T> GetNode(T node);
+        int Size { get; }
+
+        void AddNode(int node);
+        void AddEdge(int nodeX, int nodeY);
+        void AddBidirectionEdge(int nodeX, int nodeY);
+        Node GetNode(int nodeIdentifier);
+        Dictionary<int, List<int>> RawGraphStructure { get; }
     }
 }

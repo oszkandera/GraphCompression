@@ -1,31 +1,32 @@
-﻿using GraphCompression.Core.Model;
-using GraphProcessor.Core.Interfaces.GraphLoader;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
-namespace GraphProcessor.Core.GraphLoader
+namespace GraphCompression.Core.GraphLoader
 {
-    public class AdjacencyListGraphLoader : IGraphLoader
+    public class AdjacencyListGraphLoader : GraphLoaderBase
     {
-        public Graph<int> Load(string filePath)
+        protected override List<Tuple<string, string>> ProcessRawData(string filePath)
         {
-            var graph = new Graph<int>();
-            
+            var adjacencyList = new List<Tuple<string, string>>();
+
             using (var reader = new StreamReader(new FileStream(filePath, FileMode.Open)))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
                     if (line.StartsWith("%")) continue;
-                    
-                    var nodes = line.Split(" ");
-                    var nodeX = Convert.ToInt32(nodes[0]);
-                    var nodeY = Convert.ToInt32(nodes[1]);
 
-                    graph.AddEdge(nodeX, nodeY);
+                    var nodes = line.Split(" ");
+
+                    var nodeX = nodes[0];
+                    var nodeY = nodes[1];
+
+                    adjacencyList.Add(new Tuple<string, string>(nodeX, nodeY));
                 }
             }
-            return graph;
+
+            return adjacencyList;
         }
     }
 }

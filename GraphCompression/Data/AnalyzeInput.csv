@@ -1,0 +1,11 @@
+﻿Name;NodeCount;EdgeCount;MaxDegree;AverageDegree;PathToFileWithGraph
+randomGraph1;10000;49742;0;0;c:\Users\szkan\Desktop\VSB\ING\Semestralni projekt\Implementace\GraphCompression\Data\randomGraph1.edges
+randomGraph2;10000;15165;0;0;c:\Users\szkan\Desktop\VSB\ING\Semestralni projekt\Implementace\GraphCompression\Data\randomGraph2.edges
+randomGraph3;2000;39621;0;0;c:\Users\szkan\Desktop\VSB\ING\Semestralni projekt\Implementace\GraphCompression\Data\randomGraph3.edges
+smallWorld3;2000;17036;0;0;c:\Users\szkan\Desktop\VSB\ING\Semestralni projekt\Implementace\GraphCompression\Data\smallWorld1.edges
+scaleFree;5000;6525;0;0;c:\Users\szkan\Desktop\VSB\ING\Semestralni projekt\Implementace\GraphCompression\Data\scaleFree2.edges
+web-edu;3000;6000;104;4;c:\Users\szkan\Desktop\VSB\ING\Semestralni projekt\Implementace\GraphCompression\Data\web-edu.mtx
+web-polblogs;643;2000;165;7;c:\Users\szkan\Desktop\VSB\ING\Semestralni projekt\Implementace\GraphCompression\Data\web-polblogs.mtx
+web-EPA;4000;9000;175;4;c:\Users\szkan\Desktop\VSB\ING\Semestralni projekt\Implementace\GraphCompression\Data\web-EPA.edges
+web-indochina-2004;11000;48000;199;8;c:\Users\szkan\Desktop\VSB\ING\Semestralni projekt\Implementace\GraphCompression\Data\web-indochina-2004.mtx
+bio-CE-GN;2000;54000;242;48;c:\Users\szkan\Desktop\VSB\ING\Semestralni projekt\Implementace\GraphCompression\Data\bio-CE-GN.edges
